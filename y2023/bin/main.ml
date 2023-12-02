@@ -10,31 +10,38 @@ let read_file file_name =
   in
   read_lines []
 
-let only_numbers line =
-  let chars = List.init (String.length line) (String.get line) in
-  let rec only_numbers' chars numbers =
-    match chars with
-    | [] -> numbers
-    | c :: rest -> 
-      if c >= '0' && c <= '9' then
-        only_numbers' rest (c :: numbers)
-      else
-        only_numbers' rest numbers
-  in
-  only_numbers' chars []
+let reverse s =
+  s |> String.to_seq
+    |> List.of_seq
+    |> List.rev
+    |> List.to_seq
+    |> String.of_seq
+
+let rec last_number s =
+  let l = s 
+    |> String.to_seq
+    |> List.of_seq in 
+  match l with
+  | [] -> '0'
+  | h :: rest -> 
+    (match h with
+    | '0' .. '9' -> h
+    | _ -> rest |> List.to_seq |> String.of_seq |> last_number)
+
+let first_number s =
+  s |> reverse |> last_number
+
+let first_and_last s =
+  let first = first_number s in
+  let last = last_number s in
+  [first; last]
 
 let char_of_list chars = 
-  List.rev chars |> List.to_seq |> String.of_seq
-
-let first_and_last_char chars =
-  match chars with
-  | [] -> ['0']
-  | [c] -> [c;c]
-  | [_; _] -> 
-    chars
-  | c :: rest -> 
-    [c; List.hd (List.rev rest)]
-
+  chars 
+    |> List.rev
+    |> List.to_seq 
+    |> String.of_seq
+  
 let rec sum list =
   match list with
   | [] -> 0
@@ -43,8 +50,7 @@ let rec sum list =
 let () = 
   let file_name = Sys.argv.(1) in
   read_file file_name 
-    |> List.map only_numbers
-    |> List.map first_and_last_char
+    |> List.map first_and_last
     |> List.map char_of_list
     |> List.map int_of_string 
     |> sum
