@@ -17,6 +17,23 @@ let reverse s =
     |> List.to_seq
     |> String.of_seq
 
+let lookup = 
+  [ "one", "1"; "two", "2"; "three", "3"; 
+    "four", "4"; "five", "5"; "six", "6"; 
+    "seven", "7"; "eight", "8"; "nine", "9"; ]
+
+let lookup_number s =
+  List.find_map (fun (word, value) -> 
+    if word = s || word = (reverse s) then Some value else None) lookup
+
+let rec find_word_number chars =
+  match chars with
+  | [] -> None
+  | _  -> 
+    (match lookup_number (chars |> List.to_seq |> String.of_seq) with
+    | Some number -> Some number
+    | None -> chars |> List.rev |> List.tl |> List.rev |> find_word_number)
+
 let rec first_number s =
   let l = s 
     |> String.to_seq
@@ -26,7 +43,10 @@ let rec first_number s =
   | h :: rest -> 
     (match h with
     | '0' .. '9' -> h
-    | _ -> rest |> List.to_seq |> String.of_seq |> first_number)
+    | _ -> 
+      (match find_word_number l with
+      | Some number -> number.[0]
+      | None -> rest |> List.to_seq |> String.of_seq |> first_number))
 
 let last_number s =
   s |> reverse
