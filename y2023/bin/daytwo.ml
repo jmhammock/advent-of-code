@@ -43,6 +43,13 @@ let game_of_string s =
   let hints = hints_of_string s |> hint_of_string in
   { id; hints }
 
+let max_cubes l =
+  l |> List.fold_left(fun acc x -> {
+    red = max acc.red x.red;
+    blue = max acc.blue x.blue;
+    green = max acc.green x.green;
+  }) { red = None; blue = None; green = None }
+
 let valid_cubes c =
   match c with
     | { red = Some r; blue = Some b; green = Some g } -> r <= 12 && b <= 14 && g <= 13
@@ -58,6 +65,14 @@ let solve l =
   l |> List.map game_of_string
     |> List.filter(fun x -> x.hints |> List.for_all valid_cubes)
     |> List.map(fun x -> x.id)
+    |> List.fold_left(+)0
+    |> string_of_int
+    |> print_endline
+
+let solve2 l =
+  l |> List.map game_of_string
+    |> List.map(fun x -> x.hints |> max_cubes)
+    |> List.map(fun cubes -> Option.get cubes.red * Option.get cubes.blue * Option.get cubes.green)
     |> List.fold_left(+)0
     |> string_of_int
     |> print_endline
