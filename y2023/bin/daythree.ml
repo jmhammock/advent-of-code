@@ -54,7 +54,6 @@ let solve l =
       let (r, c) = find_forward (row, col) m in
       let number = find_number (row, col) m in
       ref_list := number :: !ref_list;
-      Printf.printf "%s\n" number;
       find_numbers r (c + 1))
     else find_numbers row (col + 1) in
   find_numbers 0 0;
