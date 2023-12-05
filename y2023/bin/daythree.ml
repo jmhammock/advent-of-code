@@ -49,7 +49,7 @@ let solve l =
   let rec find_numbers row col acc =
     match (row, col) with
       | (140, _) -> acc
-      | (_, 140) -> find_numbers (row + 1) 0 acc
+      | (_, 140 ) -> find_numbers (row + 1) 0 acc
       | _ -> 
         if m.(row).(col) |> is_digit && has_symbol_adjacent (row, col) m then (
           let (r, c) = find_forward (row, col) m in
