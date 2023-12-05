@@ -12,5 +12,5 @@ let read_file file_name =
 
 let () = 
   let file_name = Sys.argv.(1) in
-  let lines = read_file file_name in  
-  Daytwo.solve lines
+  let lines = read_file file_name in
+  Daythree.solve lines 
