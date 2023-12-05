@@ -40,16 +40,6 @@ let find_number (row, col) matrix =
   let (_, c2) = find_forward (row, col) matrix in
   range c1 c2 |> List.map(fun c -> matrix.(row).(c)) |> List.to_seq |> String.of_seq
 
-let unique l =
-  let rec aux l acc =
-    match l with
-    | [] ->
-        List.rev acc
-    | h :: t ->
-        if List.mem h acc then aux t acc else aux t (h :: acc)
-  in
-  aux l []
-
 let solve l =
   let ref_list = ref [] in
   let t = l |> List.map(fun s -> s |> String.to_seq |> List.of_seq ) in
