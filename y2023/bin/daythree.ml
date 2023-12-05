@@ -41,20 +41,23 @@ let find_number (row, col) matrix =
   range c1 c2 |> List.map(fun c -> matrix.(row).(c)) |> List.to_seq |> String.of_seq
 
 let solve l =
-  let ref_list = ref [] in
   let t = l |> List.map(fun s -> s |> String.to_seq |> List.of_seq ) in
   let m = Array.make_matrix (List.length t) (List.length (List.hd t)) ' ' in
   t |> List.iteri (fun i l -> 
     l |> List.iteri (fun j c -> 
       m.(i).(j) <- c));
-  let rec find_numbers row col =
-    if row > 139 then ()
-    else if col >= 139 then find_numbers (row + 1) 0
-    else if m.(row).(col) |> is_digit && has_symbol_adjacent (row, col) m then (
-      let (r, c) = find_forward (row, col) m in
-      let number = find_number (row, col) m in
-      ref_list := number :: !ref_list;
-      find_numbers r (c + 1))
-    else find_numbers row (col + 1) in
-  find_numbers 0 0;
-  !ref_list |> List.map int_of_string |> List.fold_left (+) 0 |> string_of_int |> print_endline
+  let rec find_numbers row col acc =
+    match (row, col) with
+      | (140, _) -> acc
+      | (_, 140) -> find_numbers (row + 1) 0 acc
+      | _ -> 
+        if m.(row).(col) |> is_digit && has_symbol_adjacent (row, col) m then (
+          let (r, c) = find_forward (row, col) m in
+          let number = find_number (row, col) m in
+          find_numbers r (c + 1) (number :: acc))
+        else find_numbers row (col + 1) acc in
+  find_numbers 0 0 []
+    |> List.map int_of_string
+    |> List.fold_left (+) 0 
+    |> string_of_int 
+    |> print_endline
