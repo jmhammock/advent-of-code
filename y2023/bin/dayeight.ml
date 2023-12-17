@@ -9,17 +9,19 @@ let rec parse_coords s acc =
     parse_coords (Str.replace_first pat "" s) (matched :: acc)
   with Stdlib.Not_found -> acc |> List.rev
 
+let find_by_key m k =
+  List.Assoc.find_exn ~equal:String.equal m k
+
 let rec traverse l m acc = 
   match l with
   | [] -> assert false
   | hd :: tl -> 
     match acc with 
     | ((dest, (left, right)), c) ->
-      let open List.Assoc in
       if String.equal dest "ZZZ" then c 
       else match hd with
-      | 'L' -> traverse (tl @ [hd]) m ((left, find_exn ~equal:String.equal m left), c + 1)
-      | 'R' -> traverse (tl @ [hd]) m ((right, find_exn ~equal:String.equal m right), c + 1)
+      | 'L' -> traverse (tl @ [hd]) m ((left, find_by_key m left), c + 1)
+      | 'R' -> traverse (tl @ [hd]) m ((right, find_by_key m right), c + 1)
       | _ -> assert false
 
 let solve f =
@@ -31,5 +33,5 @@ let solve f =
       | [dest; left; right] -> (dest, (left, right)) 
       | _ -> assert false
       ) in
-  let start = List.Assoc.find_exn ~equal:String.equal map "AAA" in
+  let start = find_by_key map "AAA" in
   traverse lr map (("AAA", start), 0) |> Int.to_string |> print_endline  
